@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 void main() {
   runApp(
@@ -24,21 +25,18 @@ void main() {
 /// [ChangeNotifier] is a class in `flutter:foundation`. [Spieler] does
 /// _not_ depend on Provider.
 class Spieler with ChangeNotifier {
-  int value = 0;
   List<String> players = List();
-  String player = "";
-
-  void increment() {
-    value += 1;
-    notifyListeners();
+  Random rng = new Random();
+  String randomPlayer() {
+    rng.nextInt(players.length);
+    return players.elementAt(rng.nextInt((players.length)));
   }
 
-  void addPlayer(String player) {
-    players.add(player);
-  }
-
-  void changePlayer(String player) {
-    this.player = player;
+  void addAllPlayers(String playerOne, String playerTwo, String playerThree) {
+    players.clear();
+    players.add(playerOne);
+    players.add(playerTwo);
+    players.add(playerThree);
   }
 }
 
@@ -49,15 +47,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the Spieler didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.amber,
       ),
       home: MyHomePage(),
@@ -73,11 +62,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<String> players = List();
   final myController = TextEditingController();
-
+  final secondController = TextEditingController();
+  final thirdController = TextEditingController();
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
+    secondController.dispose();
+    thirdController.dispose();
     super.dispose();
   }
 
@@ -119,26 +111,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontSize: 40,
               ),
             ),
-            TextFormField(
-              controller: myController,
-              decoration: InputDecoration(
-                labelText: 'Spieler 1',
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-            ),
-            TextFormField(
-              controller: myController,
-              decoration: InputDecoration(
-                labelText: 'Spieler 2',
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-            ),
-            TextFormField(
-              controller: myController,
-              decoration: InputDecoration(
-                  labelText: 'Spieler 3',
-                  labelStyle: TextStyle(color: Colors.white)),
-            ),
+            Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: myController,
+                      decoration: InputDecoration(
+                        labelText: 'Spieler 1',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: secondController,
+                      decoration: InputDecoration(
+                        labelText: 'Spieler 2',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: thirdController,
+                      decoration: InputDecoration(
+                          labelText: 'Spieler 3',
+                          labelStyle: TextStyle(color: Colors.white)),
+                    )
+                  ],
+                )),
             const SizedBox(height: 30),
             RaisedButton(
               child: const Text(
@@ -146,24 +144,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               onPressed: () {
-                Provider.of<Spieler>(context, listen: false)
-                    .changePlayer(myController.text);
+                print("Container pressed");
+                Provider.of<Spieler>(context, listen: false).addAllPlayers(
+                    myController.text,
+                    secondController.text,
+                    thirdController.text);
                 // Pushs the SecondScreen widget onto the navigation stack
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => SpielerPage()));
+                    .push(MaterialPageRoute(builder: (_) => Card()));
               },
             ),
             Consumer<Spieler>(
-                builder: (context, player, child) => Text(
-                      '${player.player}',
+                builder: (context, player, child) => (Text(
+                      '${player.players.isEmpty == false ? player.players.first : ""}',
                       style: Theme.of(context).textTheme.display1,
-                    )),
-            Consumer<Spieler>(
-              builder: (context, Spieler, child) => Text(
-                '${Spieler.value}',
-                style: Theme.of(context).textTheme.display1,
-              ),
-            ),
+                    ))),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -192,30 +187,30 @@ class SpielerPage extends StatelessWidget {
             // and retrieves its model (Spieler, in this case).
             // Then it uses that model to build widgets, and will trigger
             // rebuilds if the model is updated.
-            Consumer<Spieler>(
-              builder: (context, Spieler, child) => Text(
-                '${Spieler.value}',
-                style: Theme.of(context).textTheme.display1,
-              ),
-            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        // Provider.of is another way to access the model object held
-        // by an ancestor Provider. By default, even this listens to
-        // changes in the model, and rebuilds the whole encompassing widget
-        // when notified.
-        //
-        // By using `listen: false` below, we are disabling that
-        // behavior. We are only calling a function here, and so we don't care
-        // about the current value. Without `listen: false`, we'd be rebuilding
-        // the whole MyHomePage whenever Spieler notifies listeners.
-        onPressed: () =>
-            Provider.of<Spieler>(context, listen: false).increment(),
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
+  }
+}
+
+class Card extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.lightBlue,
+        body: Center(
+            child: GestureDetector(
+              onTap: () =>        print("Container pressed"),
+                behavior : HitTestBehavior.translucent,
+                child: Container( child:
+                                RotatedBox(
+          quarterTurns: 1,
+          child: Consumer<Spieler>(
+              builder: (context, player, child) => (Text(
+                    '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                    style: Theme.of(context).textTheme.display1,
+                  ))),
+      )  ))));
   }
 }
