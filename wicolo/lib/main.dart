@@ -25,11 +25,54 @@ void main() {
 /// [ChangeNotifier] is a class in `flutter:foundation`. [Spieler] does
 /// _not_ depend on Provider.
 class Spieler with ChangeNotifier {
+  Spieler() {
+    cards.add(UmfrageCard());
+    cards.add(SpielCard());
+    cards.add(VirusCard());
+    cards.add(PflichtCard());
+    cards.add(NochNieCard());
+  }
   List<String> players = List();
-  Random rng = new Random();
+  List<Widget> cards = List();
+  Random rng = Random();
   String randomPlayer() {
     rng.nextInt(players.length);
     return players.elementAt(rng.nextInt((players.length)));
+  }
+
+  Widget generateRandomCardWidget() {
+    int randomNumber = rng.nextInt(5);
+    switch (randomNumber) {
+      case 1:
+        {
+          return UmfrageCard();
+        }
+        break;
+
+      case 2:
+        {
+          return SpielCard();
+        }
+        break;
+
+      case 3:
+        {
+          return VirusCard();
+        }
+        break;
+      case 4:
+        {
+          return PflichtCard();
+          ;
+        }
+        break;
+      case 5:
+        {
+          return NochNieCard();
+          ;
+        }
+        break;
+    }
   }
 
   void addAllPlayers(String playerOne, String playerTwo, String playerThree) {
@@ -140,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 30),
             RaisedButton(
               child: const Text(
-                'Go to Second',
+                'Modus auswählen',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               onPressed: () {
@@ -154,11 +197,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     .push(MaterialPageRoute(builder: (_) => Card()));
               },
             ),
-            Consumer<Spieler>(
-                builder: (context, player, child) => (Text(
-                      '${player.players.isEmpty == false ? player.players.first : ""}',
-                      style: Theme.of(context).textTheme.display1,
-                    ))),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -169,26 +207,21 @@ class _MyHomePageState extends State<MyHomePage> {
 class SpielerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Demo Home Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: const Text('Go to First'),
-              // Pops Second Screen off the navigation stack
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            Text('You have pushed the button this many times:'),
-            // Consumer looks for an ancestor Provider widget
-            // and retrieves its model (Spieler, in this case).
-            // Then it uses that model to build widgets, and will trigger
-            // rebuilds if the model is updated.
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          RaisedButton(
+            child: const Text('Go to First'),
+            // Pops Second Screen off the navigation stack
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          Text('You have pushed the button this many times:'),
+          // Consumer looks for an ancestor Provider widget
+          // and retrieves its model (Spieler, in this case).
+          // Then it uses that model to build widgets, and will trigger
+          // rebuilds if the model is updated.
+        ],
       ),
     );
   }
@@ -197,20 +230,122 @@ class SpielerPage extends StatelessWidget {
 class Card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Consumer<Spieler>(
+        builder: (context, player, child) =>
+            (player.generateRandomCardWidget()));
+  }
+}
+
+class UmfrageCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.purple,
+        body: GestureDetector(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => Card())),
+            child: Center(
+              child: RotatedBox(
+                quarterTurns: 1,    child: Column(children: <Widget>[
+              Text('Umfrage'),
+            
+                 Consumer<Spieler>(
+                    builder: (context, player, child) => (Text(
+                          '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                          style: Theme.of(context).textTheme.display1,
+                        ))),
+                ])
+            ))));
+  }
+}
+
+class PflichtCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.green,
+        body: GestureDetector(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => Card())),
+           child: Center(
+              child: RotatedBox(
+                quarterTurns: 1,    child: Column(children: <Widget>[
+              Text('Pflicht'),
+            
+                 Consumer<Spieler>(
+                    builder: (context, player, child) => (Text(
+                          '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                          style: Theme.of(context).textTheme.display1,
+                        ))),
+                ])
+            ))));
+  }
+}
+
+class VirusCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.lightGreen,
+        body: GestureDetector(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => Card())),
+       child: Center(
+              child: RotatedBox(
+                quarterTurns: 1,    child: Column(children: <Widget>[
+              Text('Virus'),
+            
+                 Consumer<Spieler>(
+                    builder: (context, player, child) => (Text(
+                          '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                          style: Theme.of(context).textTheme.display1,
+                        ))),
+                ])
+            ))));
+  }
+}
+
+class NochNieCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.orangeAccent,
+        body: GestureDetector(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => Card())),
+      child: Center(
+              child: RotatedBox(
+                quarterTurns: 1,    child: Column(children: <Widget>[
+              Text('Ich hab noch nie...'),
+            
+                 Consumer<Spieler>(
+                    builder: (context, player, child) => (Text(
+                          '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                          style: Theme.of(context).textTheme.display1,
+                        ))),
+                ])
+            ))));
+  }
+}
+class SpielCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.lightBlue,
-        body: Center(
-            child: GestureDetector(
-              onTap: () =>        print("Container pressed"),
-                behavior : HitTestBehavior.translucent,
-                child: Container( child:
-                                RotatedBox(
-          quarterTurns: 1,
-          child: Consumer<Spieler>(
-              builder: (context, player, child) => (Text(
-                    '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
-                    style: Theme.of(context).textTheme.display1,
-                  ))),
-      )  ))));
+        body: GestureDetector(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => Card())),
+         child: Center(
+              child: RotatedBox(
+                quarterTurns: 1,    child: Column(children: <Widget>[
+              Text('Spiel'),
+            
+                 Consumer<Spieler>(
+                    builder: (context, player, child) => (Text(
+                          '${player.players.isEmpty == false ? player.randomPlayer() : ""}',
+                          style: Theme.of(context).textTheme.display1,
+                        ))),
+                ])
+            ))));
   }
 }
