@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     TextFormField(
                       controller: myController,
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Spieler 1',
                         labelStyle: TextStyle(color: Colors.white),
@@ -74,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextFormField(
                       controller: secondController,
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Spieler 2',
                         labelStyle: TextStyle(color: Colors.white),
@@ -81,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextFormField(
                       controller: thirdController,
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                           labelText: 'Spieler 3',
                           labelStyle: TextStyle(color: Colors.white)),
