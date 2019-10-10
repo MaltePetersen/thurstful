@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )),
             const SizedBox(height: 30),
             RaisedButton(
+              color: Color.fromRGBO(201, 57, 57, 1.0),
               child: const Text(
                 'Modus auswählen',
                 style: TextStyle(fontSize: 20, color: Colors.white),
