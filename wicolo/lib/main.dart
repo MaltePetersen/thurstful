@@ -63,13 +63,12 @@ class Spieler with ChangeNotifier {
       case 4:
         {
           return PflichtCard();
-          ;
         }
         break;
-      case 5:
+        
+        default:
         {
           return NochNieCard();
-          ;
         }
         break;
     }
