@@ -9,18 +9,23 @@ class CardModel with ChangeNotifier {
 CardModel(){
   randomColor();
   randomType();
+  randomSentece();
 }
   Random rng = Random();
   MaterialColor color;
   String type;
   String player;
+  String sentence; 
   List types = ["Umfrage", "Spiel", "Virus", "Pflicht", "Hab noch nie"];
+  List sentences= ["user moin", "user moin2"];
   List colors = [Colors.red, Colors.green, Colors.yellow];
   List<String> players = List();
   randomColor() {
     color = colors[rng.nextInt(colors.length)];
   }
-
+  randomSentece(){
+    sentence = sentences[rng.nextInt(sentences.length)];
+  }
   randomType() {
     type = types[rng.nextInt(types.length)];
   }
@@ -31,11 +36,14 @@ CardModel(){
 
   updateCard() {
     randomColor();
+    randomSentece();
     randomType();
     randomPlayer();
     notifyListeners();
   }
-
+  String getSentence(){
+    return sentence.replaceAll("user", player);
+  }
   String getType() {
     return type;
   }

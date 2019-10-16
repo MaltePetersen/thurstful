@@ -18,7 +18,7 @@ class Card extends StatelessWidget {
                             '${cardModel.getType()}',
                             style: Theme.of(context).textTheme.display1,
                           ),      Text(
-                            '${cardModel.getPlayer()}',
+                            '${cardModel.getSentence()}',
                             style: Theme.of(context).textTheme.display1,
                           ),
                         ])))))));
