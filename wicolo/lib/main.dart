@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wicolo/presentation/MyApp.dart';
-import 'package:wicolo/state_management/Spieler.dart';
+import 'package:wicolo/state_management/CardModel.dart';
 
 void main() {
   runApp(
@@ -15,7 +15,7 @@ void main() {
       // Initialize the model in the builder. That way, Provider
       // can own Spieler's lifecycle, making sure to call `dispose`
       // when not needed anymore.
-      builder: (context) => Spieler(),
+      builder: (context) => CardModel(),
       child: MyApp(),
     ),
   );

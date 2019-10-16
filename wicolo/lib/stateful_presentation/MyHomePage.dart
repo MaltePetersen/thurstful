@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wicolo/presentation/Card.dart' as wicoloCard;
-import 'package:wicolo/state_management/Spieler.dart';
+import 'package:wicolo/state_management/CardModel.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               onPressed: () {
-                Provider.of<Spieler>(context, listen: false).addAllPlayers(
+                Provider.of<CardModel>(context, listen: false).addAllPlayers(
                     myController.text,
                     secondController.text,
                     thirdController.text);
