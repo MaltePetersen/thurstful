@@ -4,18 +4,13 @@ import 'package:wicolo/model/model.dart';
 import 'package:wicolo/state_management/CardModel.dart';
 
 class Card extends StatelessWidget {
-  var fido = Sentence(
-    id: 0,
-    name: 'Fido',
-    sentenceType: 1
-  );
   @override
   Widget build(BuildContext context) {
     return Consumer<CardModel>(
         builder: (context, cardModel, child) => (Scaffold(
             backgroundColor: cardModel.getColor(),
             body: GestureDetector(
-                onTap: () => Provider.of<CardModel>(context).insertSentence(fido),
+                onTap: () => Provider.of<CardModel>(context).updateCard(),
                 child: Center(
                     child: RotatedBox(
                         quarterTurns: 1,

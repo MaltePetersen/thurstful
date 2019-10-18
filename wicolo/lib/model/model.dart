@@ -1,7 +1,7 @@
 class Sentence {
-  final int id;
-  final String name;
-  final int sentenceType;
+   int id;
+  String name;
+   int sentenceType;
 
   Sentence({this.id, this.name, this.sentenceType});
 
