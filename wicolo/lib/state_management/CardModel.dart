@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:math';
 
 import 'package:sqflite/sqlite_api.dart';
+import 'package:wicolo/model/model.dart';
 
 /// Simplest possible model, with just one field.
 ///
@@ -13,7 +14,6 @@ import 'package:sqflite/sqlite_api.dart';
 /// _not_ depend on Provider.
 class CardModel with ChangeNotifier {
   Future database;
-
 
   CardModel() {
     randomColor();
@@ -76,17 +76,18 @@ class CardModel with ChangeNotifier {
     players.add(playerThree);
     randomPlayer();
   }
-    Future<Database> getDatabase() async {
+
+  Future<Database> getDatabase() async {
     if (database == null)
       database = openDatabase(
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'databaseTest.db'),
-        // When the database is first created, create a table to store dogs.
+        join(await getDatabasesPath(), 'databaseTew.db'),
+        // When the database is first created, create a table to store sentences.
         onCreate: (db, version) {
           return db.execute(
-            "CREATE TABLE sentences(id INTEGER PRIMARY KEY, name TEXT)",
+            "CREATE TABLE sentences(id INTEGER PRIMARY KEY, name TEXT, sentenceType INTEGER )",
           );
         },
         // Set the version. This executes the onCreate function and provides a
@@ -96,85 +97,65 @@ class CardModel with ChangeNotifier {
     return database;
   }
 
-  Future<void> insertDog(Sentence dog) async {
+  Future<void> insertSentence(Sentence sentence) async {
     // Get a reference to the database.
     final Database db = await getDatabase();
 
-    // Insert the Dog into the correct table. Also specify the
-    // `conflictAlgorithm`. In this case, if the same dog is inserted
+    // Insert the Sentence into the correct table. Also specify the
+    // `conflictAlgorithm`. In this case, if the same sentence is inserted
     // multiple times, it replaces the previous data.
     await db.insert(
       'sentences',
-      dog.toMap(),
+      sentence.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    var allDogs = await dogs();
-    allDogs.forEach((f) => {prefix0.log(f.toString())});
+    var allSentences = await getAllSentences();
+    allSentences.forEach((f) => {prefix0.log(f.toString())});
   }
 
-  Future<List<Sentence>> dogs() async {
+  Future<List<Sentence>> getAllSentences() async {
     // Get a reference to the database.
     final Database db = await getDatabase();
 
-    // Query the table for all The Dogs.
+    // Query the table for all The Sentences.
     final List<Map<String, dynamic>> maps = await db.query('sentences');
 
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    // Convert the List<Map<String, dynamic> into a List<Sentence>.
     return List.generate(maps.length, (i) {
       return Sentence(
         id: maps[i]['id'],
         name: maps[i]['name'],
+        sentenceType: maps[i]['sentenceType'],
       );
     });
   }
 
-  Future<void> updateDog(Sentence dog) async {
+  Future<void> updateSentence(Sentence sentence) async {
     // Get a reference to the database.
     final db = await getDatabase();
 
-    // Update the given Dog.
+    // Update the given Sentence.
     await db.update(
       'sentences',
-      dog.toMap(),
-      // Ensure that the Dog has a matching id.
+      sentence.toMap(),
+      // Ensure that the Sentence has a matching id.
       where: "id = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
-      whereArgs: [dog.id],
+      // Pass the Sentence's id as a whereArg to prevent SQL injection.
+      whereArgs: [sentence.id],
     );
   }
 
-  Future<void> deleteDog(int id) async {
+  Future<void> deleteSentence(int id) async {
     // Get a reference to the database.
     final db = await getDatabase();
 
-    // Remove the Dog from the database.
+    // Remove the Sentence from the database.
     await db.delete(
       'sentences',
-      // Use a `where` clause to delete a specific dog.
+      // Use a `where` clause to delete a specific sentence.
       where: "id = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      // Pass the Sentence's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
-  }
-}
-
-class Sentence {
-  final int id;
-  final String name;
-
-  Sentence({this.id, this.name});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-          };
-  }
-
-  // Implement toString to make it easier to see information about
-  // each dog when using the print statement.
-  @override
-  String toString() {
-    return 'Dog{id: $id, name: $name}';
   }
 }
