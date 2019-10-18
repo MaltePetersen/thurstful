@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:wicolo/presentation/MyApp.dart';
 import 'package:wicolo/state_management/CardModel.dart';
 
-void main() {
+
+Future main() async {
   runApp(
     // Provide the model to all widgets within the app. We're using
     // ChangeNotifierProvider because that's a simple way to rebuild
@@ -20,4 +21,3 @@ void main() {
     ),
   );
 }
-
