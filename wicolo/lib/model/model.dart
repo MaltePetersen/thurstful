@@ -2,8 +2,8 @@ class Sentence {
    int id;
   String name;
    int sentenceType;
-
-  Sentence({this.id, this.name, this.sentenceType});
+  Sentence({this.id, this.name, this.sentenceType}) ;
+  
 
   Map<String, dynamic> toMap() {
     return {

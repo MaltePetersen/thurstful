@@ -4,73 +4,50 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:wicolo/Repository/SentenceRepository.dart';
 import 'package:wicolo/model/model.dart';
+import 'package:http/http.dart' as http;
 
 /// Simplest possible model, with just one field.
 ///
 /// [ChangeNotifier] is a class in `flutter:foundation`. [CardModel] does
 /// _not_ depend on Provider.
 class CardModel with ChangeNotifier {
-  CardModel() {
-    generateAppData();
-    randomColor();
-    randomType();
-    randomSentence(typeNumber);
-  }
   SentenceRepository sentenceRepository = SentenceRepository();
   Random rng = Random();
   MaterialColor color;
-  String type;
-  int typeNumber;
+  int type;
+  String currentType;
   String player;
   Sentence sentence = Sentence();
-  //Umfrage = Type1; Spiel = Type2; Virus = Type3; Pflicht = Type4; Hab noch nie = Type5
-  List types = ["Umfrage", "Spiel", "Virus", "Pflicht", "Hab noch nie"];
-  List umfragen = ["user umfrage"];
-  List spiele = ["user spiel"];
-  List viruse = ["user virus"];
-  List pflichte = ["user pflicht"];
-  List habNochNiee = ["user hab noch nie"];
   List colors = [Colors.red, Colors.green, Colors.yellow];
   List<String> players = List();
-  var quest1 = Sentence(id: 0, name: 'Umfrage user', sentenceType: 0);
-  var quest2 = Sentence(id: 1, name: 'Spiel user', sentenceType: 1);
-  var quest3 = Sentence(id: 2, name: 'Virus user', sentenceType: 2);
-  var quest4 = Sentence(id: 3, name: 'pflicht user', sentenceType: 3);
-  var quest5 = Sentence(id: 4, name: 'Hab noch nie user', sentenceType: 4);
-  generateAppData() {
-    insertSentence(quest1);
-    insertSentence(quest2);
-    insertSentence(quest3);
-    insertSentence(quest4);
-    insertSentence(quest5);
+
+  CardModel() {
+    randomColor();
+    randomSentence();
   }
 
   randomColor() {
     color = colors[rng.nextInt(colors.length)];
   }
 
-  randomSentence(int numb) async {
-  List<Sentence> list = await getBytype(numb);
-  prefix0.log(list.length.toString() + ' ' + numb.toString());
+  randomSentence() async {
+    type = rng.nextInt(4);
+    currentType = await sentenceRepository.getCategorieById(type);
+    prefix0.log(currentType);
+    List<Sentence> list = await getBytype(type);
     sentence = list[rng.nextInt(list.length)];
-  }
-
-  randomType() {
-    typeNumber = rng.nextInt(types.length  );
-    type = types[typeNumber];
   }
 
   randomPlayer() {
     player = players[rng.nextInt(players.length)];
   }
 
-  updateCard() async{
+  updateCard() async {
     randomColor();
-    randomType();
-    await randomSentence(typeNumber);
+    await randomSentence();
     randomPlayer();
     notifyListeners();
-    getBytype(1);
+    fetchPost().then((onValue) => prefix0.log(onValue.body));
   }
 
   String getSentence() {
@@ -78,7 +55,7 @@ class CardModel with ChangeNotifier {
   }
 
   String getType() {
-    return type;
+    return currentType;
   }
 
   MaterialColor getColor() {
@@ -113,7 +90,11 @@ class CardModel with ChangeNotifier {
     return sentenceRepository.getAllSentences();
   }
 
-  Future<List<Sentence>> getBytype(int i)  {
-    return  sentenceRepository.getAllByType(i);
+  Future<List<Sentence>> getBytype(int i) {
+    return sentenceRepository.getAllByType(i);
+  }
+
+  Future<http.Response> fetchPost() {
+    return http.get('https://springwicolo.herokuapp.com/version');
   }
 }
