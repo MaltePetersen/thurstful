@@ -1,6 +1,7 @@
 import 'dart:developer' as prefix0;
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'dart:math';
 import 'package:wicolo/Repository/SentenceRepository.dart';
 import 'package:wicolo/model/model.dart';
@@ -18,7 +19,7 @@ class CardModel with ChangeNotifier {
   String currentType;
   String player;
   Sentence sentence = Sentence();
-  List colors = [Colors.red, Colors.green, Colors.yellow];
+  List colors = [Colors.red, Colors.green, Colors.blue];
   List<String> players = List();
 
   CardModel() {
@@ -47,7 +48,7 @@ class CardModel with ChangeNotifier {
     await randomSentence();
     randomPlayer();
     notifyListeners();
-    fetchPost().then((onValue) => prefix0.log(onValue.body));
+fetchPost();
   }
 
   String getSentence() {
@@ -94,7 +95,10 @@ class CardModel with ChangeNotifier {
     return sentenceRepository.getAllByType(i);
   }
 
-  Future<http.Response> fetchPost() {
-    return http.get('https://springwicolo.herokuapp.com/version');
+  Future<http.Response> fetchPost() async {
+    int version = await sentenceRepository.getDBVersion();
+    Response backendVersionResponse = await http.get('https://springwicolo.herokuapp.com/version');
+    int backendVersion  = int.parse( backendVersionResponse.body);
+    prefix0.log(version.toString() + ' ' + backendVersion.toString());
   }
 }
