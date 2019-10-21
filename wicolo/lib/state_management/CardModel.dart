@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer' as prefix0;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'dart:math';
 import 'package:wicolo/Repository/SentenceRepository.dart';
+import 'package:wicolo/dto/SentenceDTO.dart';
 import 'package:wicolo/model/model.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,13 +20,33 @@ class CardModel with ChangeNotifier {
   int type;
   String currentType;
   String player;
-  Sentence sentence = Sentence();
-  List colors = [Colors.red, Colors.green, Colors.blue];
+  Sentence sentence = Sentence(id: 1,name: '');
+  List colors = [Colors.red, Colors.green, Colors.lightBlue];
   List<String> players = List();
 
-  CardModel() {
-    randomColor();
-    randomSentence();
+  CardModel() {        
+    databaseUpdateControllFlow();
+  }
+  //checks if the database should be updated and updated it if needed
+  databaseUpdateControllFlow() async {
+    try{ 
+
+    int version = await sentenceRepository.getDBVersion();
+    Response backendVersionResponse =
+        await http.get('https://springwicolo.herokuapp.com/version');
+      
+    if (  version < int.parse(backendVersionResponse.body)) {
+      prefix0.log('should Update' +version.toString());
+      Response response = await http.get('https://springwicolo.herokuapp.com/sentences');
+      List<dynamic> list = json.decode(response.body);
+      List<Sentence> sentencesDB = List();
+      int c = 1;
+      list.forEach((f) =>         sentencesDB.add(Sentence(id: c++,name: SentenceDTO.fromJson(f).name,sentenceType: SentenceDTO.fromJson(f).queryTypeId) )); 
+      sentenceRepository.updateDatabase(sentencesDB,int.parse(backendVersionResponse.body));
+    }
+    } catch (e) {
+    print(e);
+  }
   }
 
   randomColor() {
@@ -32,7 +54,7 @@ class CardModel with ChangeNotifier {
   }
 
   randomSentence() async {
-    type = rng.nextInt(4);
+    type = rng.nextInt(4) + 1;
     currentType = await sentenceRepository.getCategorieById(type);
     prefix0.log(currentType);
     List<Sentence> list = await getBytype(type);
@@ -48,7 +70,6 @@ class CardModel with ChangeNotifier {
     await randomSentence();
     randomPlayer();
     notifyListeners();
-fetchPost();
   }
 
   String getSentence() {
@@ -93,12 +114,5 @@ fetchPost();
 
   Future<List<Sentence>> getBytype(int i) {
     return sentenceRepository.getAllByType(i);
-  }
-
-  Future<http.Response> fetchPost() async {
-    int version = await sentenceRepository.getDBVersion();
-    Response backendVersionResponse = await http.get('https://springwicolo.herokuapp.com/version');
-    int backendVersion  = int.parse( backendVersionResponse.body);
-    prefix0.log(version.toString() + ' ' + backendVersion.toString());
   }
 }

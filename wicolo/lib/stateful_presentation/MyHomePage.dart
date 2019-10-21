@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text(
-              'Wicolo',
+              'Thurstful',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 40,
@@ -103,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     secondController.text,
                     thirdController.text);
                 // Pushs the SecondScreen widget onto the navigation stack
+                Provider.of<CardModel>(context).updateCard();
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (_) => wicoloCard.Card()));
               },
