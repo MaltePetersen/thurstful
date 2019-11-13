@@ -5,12 +5,12 @@ A drinking game similar to picolo.
 
 ## Getting Started
 
-This project is written wiuth the framework flutter.
-The backend of the project is written with the help of theframework spring
+This project is written with the framework flutter.
+The backend of the project is written with the help of the framework spring
 It is already deployed through heroku and can be found [here](https://springwicolo.herokuapp.com/
 ):
 
-We are using th efree plan from heroku therefore if the server was 
+We are using the free plan from heroku therefore if the server was 
 not used for a few minutes it will need 30 seconds to start first before processing your request.
 The code of the backend can be found [here](https://gitlab.com/mobile-anwendung/ma-server
 ):
@@ -23,7 +23,7 @@ to do so please follow the instruction in the link:
 ```
 https://flutter.dev/docs/get-started/install
 ```
-Dont forget to set up an android emulator aswell
+Dont forget to set up an android emulator aswell!
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
@@ -32,9 +32,9 @@ To run the applcation use:
 ```
 flutter run
 ```
-in this folder
+in this folder.
 
-If your emulator is configured the right way the application should start in it.
+If your emulator is configured the right way the application should start on it.
 if anything is not working as it should be try to find the solution through this command
 ```
 flutter doctor
@@ -45,7 +45,7 @@ To build the apk you use the command:
 ```
 flutter build apk
 ```
-For troubleshouting are for insturctions for IOS look [here](https://flutter.dev/docs/deployment/android
+For troubleshouting or for insturctions for IOS look into [here](https://flutter.dev/docs/deployment/android
 ).
 ## Deployment
 To deploy the apk to your phone you first need to connect it using the debug mode of your phone if this connection was successful 
@@ -53,5 +53,5 @@ you can deploy the application as an apk with:
 ```
 flutter install
 ```
-For troubleshouting are for insturctions for IOS look [here](https://flutter.dev/docs/deployment/android
+For troubleshouting or for insturctions for IOS look into [here](https://flutter.dev/docs/deployment/android
 ).
